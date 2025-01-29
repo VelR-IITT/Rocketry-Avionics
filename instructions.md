@@ -1,9 +1,3 @@
-Here's the improved version of your `.md` file with better formatting and clarity:  
-
----
-
-# Setting Up the KiCad Project  
-
 ## Steps to Open and Configure the Project  
 
 1. **Clone the repository**  
@@ -34,7 +28,3 @@ Here's the improved version of your `.md` file with better formatting and clarit
 - **You are now ready to start building!**  
 - If you need to make changes to the repository, **contact [Pratham](https://github.com/prathamchintamani)**.  
 - **DO NOT make changes and push to the `main` branch.**  
-
----
-
-This version improves readability, structure, and clarity while maintaining all the original details. Let me know if you need further refinements!
