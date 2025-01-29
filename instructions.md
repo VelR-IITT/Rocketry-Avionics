@@ -1,6 +1,8 @@
 step 1: clone the repo \
-step 2: go to ./Project\_Library/on\_board\_pcb \ 
-step 3: double click on\_board\_pcb.kicad\_pro \ 
+step 2: go to ./Project\_Library/on\_board\_pcb 
+\ 
+step 3: double click on\_board\_pcb.kicad\_pro
+\
 <br/>
 if that doesnt work, open the project file (.kicad\_pro) from the file tab on kicad \ 
 <br/>
