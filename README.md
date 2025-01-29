@@ -25,7 +25,7 @@ Step-by-step guides and documentation to help you set up, assemble, and troubles
 ## 📧 Contact
 
 🌐 GitHub: [Pratham Chintamani](https://github.com/prathamchintamani) \
-🌐 GitHub: [Pratik Raj](https://github.com/0823pratik)
+🌐 GitHub: [Pratik Raj](https://github.com/0823pratik)\
 🌐 GitHub: [Bhavesh Jain](https://github.com/Bhavesh-Ja1n)
 
 
