@@ -1,0 +1,209 @@
+(footprint "BMP-388_smd"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0.254 -0.992 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "1f21d5d0-dfe9-4ae7-a8ff-c7a746adb809")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "BMP-388_smd"
+		(at 0.254 0.508 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "60bda35b-ceb8-4948-81b1-b859647997e2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0.254 -0.492 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "b3978de9-7bac-4964-8088-5d0571f8a5e0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0.254 -0.492 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "45d2f60c-af41-43b5-b57c-03bff166bc77")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0.254 -0.492 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "20c861c3-acc6-4a5c-a82e-d146867f0a11")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_rect
+		(start -3.476 -18.176)
+		(end 5.024 -5.176)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "6cc48b8b-4a2a-4e6b-b0f1-eaa5569d9514")
+	)
+	(fp_rect
+		(start -3.976 -18.676)
+		(end 5.524 -4.676)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "71871122-2a1f-41c2-a184-c57fdd2d8d40")
+	)
+	(fp_text user "GND"
+		(at 1.524 -8.676 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "18116804-5fd7-44cc-9c21-2f3f6ace74b8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "VCC"
+		(at 1.524 -6.176 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "9004c5f7-1646-4dbe-b225-1d3ac773553e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "INT"
+		(at 1.524 -16.176 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "b3c0608d-f35d-4ddf-a2f2-98acfffb51a7")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "SCL"
+		(at 1.524 -13.676 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "bc56b9b1-29d4-4e8b-8179-5be830588abd")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "SDA"
+		(at 1.524 -11.176 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "fba24dfb-4c96-4308-a459-867ee8855598")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0.254 2.008 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "85fd0315-3f7d-408c-8f04-fadd51f0e211")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -0.976 -16.676)
+		(size 3.643 1.762)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(thermal_bridge_angle 45)
+		(uuid "d2cebb5c-8990-4f65-80aa-15623362f7ee")
+	)
+	(pad "2" smd roundrect
+		(at -0.976 -14.176)
+		(size 3.643 1.762)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(thermal_bridge_angle 45)
+		(uuid "d48b4477-98f6-4280-9899-064f574cc7ad")
+	)
+	(pad "3" smd roundrect
+		(at -0.976 -11.676)
+		(size 3.643 1.762)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(thermal_bridge_angle 45)
+		(uuid "7a2353e4-a7da-4cad-83f4-be6b5dcc983f")
+	)
+	(pad "4" smd roundrect
+		(at -0.976 -9.176)
+		(size 3.643 1.762)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(thermal_bridge_angle 45)
+		(uuid "4274a3ba-cd22-433e-9e7e-802028b358fb")
+	)
+	(pad "5" smd roundrect
+		(at -0.976 -6.676)
+		(size 3.643 1.762)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(roundrect_rratio 0.25)
+		(thermal_bridge_angle 45)
+		(uuid "294b78ee-ca97-4a37-999c-c2ce19e22d2f")
+	)
+)
