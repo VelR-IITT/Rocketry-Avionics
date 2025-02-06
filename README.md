@@ -9,16 +9,16 @@ Welcome to the **Rocketry-Avionics** repository! This project is dedicated to th
 This repository contains the following:
 
 ### 1. **Images** 📷
-Contains visual assets, diagrams, and photos related to the project. These images are useful for understanding the design and assembly of components.
+Contains visual assets, diagrams, and photos related to the project. These images are useful for understanding the design and assembly of components. (Yet to be done)
 
 ### 2. **Files for Components** 📄
-Includes schematics, datasheets, and design files for various components used in the avionics system. These files are essential for replicating or modifying the project.
+Includes schematics, datasheets, and design files for various components used in the avionics system. These files are essential for replicating or modifying the project. Will be added soon.
 
 ### 3. **Code** 💻
-Contains the source code for the avionics system. This includes firmware, scripts, and any software required to operate the rocket's electronics.
+Contains the source code for the avionics system. This includes firmware, scripts, and any software required to operate the rocket's electronics. (Yet to be done)
 
 ### 4. **Instructions** 📝
-Step-by-step guides and documentation to help you set up, assemble, and troubleshoot the avionics system. Perfect for beginners and experienced contributors alike.
+Step-by-step guides and documentation to help you set up, assemble, and troubleshoot the avionics system.
 
 ---
 
