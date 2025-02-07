@@ -1471,7 +1471,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin input line
 				(at 7.62 -1.27 180)
 				(length 2.54)
 				(name "Rx"
@@ -1489,7 +1489,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin output line
 				(at -7.62 -1.27 0)
 				(length 2.54)
 				(name "Tx"

@@ -1,4 +1,5 @@
 (sym_lib_table
   (version 7)
   (lib (name "Avionics_Symbols")(type "KiCad")(uri "/home/ramtesla/Documents/Rocketry-Avionics/Avionics_Symbols/Avionics_Symbols.kicad_sym")(options "")(descr ""))
+  (lib (name "arduino-library")(type "KiCad")(uri "/home/ramtesla/Downloads/arduino-library.kicad_sym")(options "")(descr ""))
 )
