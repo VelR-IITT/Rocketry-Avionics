@@ -69,7 +69,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin power_in line
 				(at 2.54 -10.16 90)
 				(length 2.54)
 				(name "GND"
@@ -87,7 +87,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin power_in line
 				(at 2.54 7.62 270)
 				(length 2.54)
 				(name "3.3V"
