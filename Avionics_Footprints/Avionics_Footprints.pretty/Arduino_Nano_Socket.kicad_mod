@@ -15,9 +15,9 @@
 			)
 		)
 	)
-	(property "Value" "Arduino_Nano_Socket"
+	(property "Value" "Arduino Nano"
 		(at 0 -21.082 90)
-		(layer "F.Fab")
+		(layer "F.SilkS")
 		(uuid "0543a795-8418-457f-9c9c-5841f52804b9")
 		(effects
 			(font
