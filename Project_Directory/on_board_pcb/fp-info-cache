@@ -1,4 +1,4 @@
-24654578294567276
+24666754657940212
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -14,6 +14,27 @@ audio belton reverb
 7
 7
 Avionics_Footprints
+ADXL377
+
+
+0
+6
+6
+Avionics_Footprints
+AMS1117
+
+
+0
+4
+4
+Avionics_Footprints
+Arduino_Nano_Socket
+https://docs.arduino.cc/hardware/nano
+
+0
+30
+30
+Avionics_Footprints
 BMP-388_smd
 
 
@@ -21,12 +42,40 @@ BMP-388_smd
 5
 5
 Avionics_Footprints
+BMP180
+
+
+0
+0
+0
+Avionics_Footprints
 LSM6DS0
 
 
 0
 12
 12
+Avionics_Footprints
+MPU9250
+
+
+0
+0
+0
+Avionics_Footprints
+NEO_7M
+
+
+0
+0
+0
+Avionics_Footprints
+RFM95W
+
+
+0
+16
+16
 Avionics_Footprints
 Teensy-4.1
 
