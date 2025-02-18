@@ -1,5 +1,6 @@
 ## Steps to Open and Configure the Project  
 
+0. **In the following procedure, opening the same project file may cause problems, please create a new project and proceed.**
 1. **Clone the repository**  
 2. **Navigate to the project directory:**  
    ```sh
@@ -19,8 +20,7 @@
    - Open the **Footprint Editor**.  
    - Go to **Preferences > Manage Footprint Libraries**.  
    - Add the `.pretty` folder located in the `Avionics_Footprints` directory.  
-   - Click **Save**.  
-
+   - Click **Save**.
 ---
 
 ## Important Notes  
