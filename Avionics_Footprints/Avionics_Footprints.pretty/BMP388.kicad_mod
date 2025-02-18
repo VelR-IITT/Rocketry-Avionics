@@ -4,7 +4,7 @@
 	(generator_version "8.0")
 	(layer "F.Cu")
 	(property "Reference" "REF**"
-		(at 0 -0.5 0)
+		(at -3.89574 -9.27 0)
 		(unlocked yes)
 		(layer "F.SilkS")
 		(uuid "80091d0e-018f-481e-8ef3-4300f8902405")
@@ -16,7 +16,7 @@
 		)
 	)
 	(property "Value" "BMP388"
-		(at 0 1 0)
+		(at -3.89574 -7.77 0)
 		(unlocked yes)
 		(layer "F.Fab")
 		(uuid "4198d7cc-4080-493b-9541-0709a14c1125")
@@ -28,7 +28,7 @@
 		)
 	)
 	(property "Footprint" ""
-		(at 0 0 0)
+		(at -3.89574 -8.77 0)
 		(unlocked yes)
 		(layer "F.Fab")
 		(hide yes)
@@ -41,7 +41,7 @@
 		)
 	)
 	(property "Datasheet" ""
-		(at 0 0 0)
+		(at -3.89574 -8.77 0)
 		(unlocked yes)
 		(layer "F.Fab")
 		(hide yes)
@@ -54,7 +54,7 @@
 		)
 	)
 	(property "Description" ""
-		(at 0 0 0)
+		(at -3.89574 -8.77 0)
 		(unlocked yes)
 		(layer "F.Fab")
 		(hide yes)
@@ -67,8 +67,110 @@
 		)
 	)
 	(attr through_hole)
+	(fp_rect
+		(start -20 -18)
+		(end 12 2)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "c686c319-64ac-48a9-8a6a-c2c68dbac717")
+	)
+	(fp_text user "VCC"
+		(at 0.5 -1.35 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "2383de27-e9f9-4a0d-8403-fcbe6208f869")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "SDI"
+		(at -7.15 -1.1 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "2c963e6d-1b16-4c31-87d5-aaad1a647659")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "BMP388"
+		(at -15.15 1.25 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "3eacf9be-37bf-4902-af21-43ebe487e51f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "SDO"
+		(at -4.6 -1.1 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "3ffc5d6e-d605-4fa5-a6ac-d18964f7bd97")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "CSB"
+		(at -12.35 -1.1 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "7847b04b-0742-48d6-acae-f836e00b1122")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "GND"
+		(at -2.3 -1.15 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "c5a232ab-5c27-4833-9b53-81235f572852")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "SCK"
+		(at -9.75 -1.2 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "de7ab390-3b08-4ccd-82a1-cf7db96674e1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
 	(fp_text user "${REFERENCE}"
-		(at 0 2.5 0)
+		(at -3.89574 -6.27 0)
 		(unlocked yes)
 		(layer "F.Fab")
 		(uuid "e0109cf5-62d9-4785-94cf-c0483fca7c3d")
@@ -78,5 +180,57 @@
 				(thickness 0.15)
 			)
 		)
+	)
+	(pad "1" thru_hole circle
+		(at -12.7 0)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "5f18e45d-2281-4bc6-b8b7-00e773ebbd7e")
+	)
+	(pad "2" thru_hole circle
+		(at -10.16 0)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "080c1f2d-72c7-4bc3-8f79-d5540f6d039f")
+	)
+	(pad "3" thru_hole circle
+		(at -7.62 0)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "618958d7-3c06-4337-91b9-21fc9cb6776f")
+	)
+	(pad "4" thru_hole circle
+		(at -5.08 0)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "151f7995-9209-44da-b38a-dda4cc2db2ca")
+	)
+	(pad "5" thru_hole circle
+		(at -2.54 0)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "d343dfc1-3b99-4893-af8d-5532c2e1c69d")
+	)
+	(pad "6" thru_hole circle
+		(at 0 0)
+		(size 1.524 1.524)
+		(drill 0.762)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "816c39e6-0b68-4311-848e-4c6149486ae7")
+	)
+	(group ""
+		(uuid "df85ef93-f814-4f41-9593-f1a414c6cd77")
+		(members "816c39e6-0b68-4311-848e-4c6149486ae7" "c686c319-64ac-48a9-8a6a-c2c68dbac717")
 	)
 )

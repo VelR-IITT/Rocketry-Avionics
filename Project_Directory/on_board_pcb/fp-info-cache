@@ -1,4 +1,4 @@
-24666754657940212
+24666756599352528
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -35,14 +35,14 @@ https://docs.arduino.cc/hardware/nano
 30
 30
 Avionics_Footprints
-BMP-388_smd
+BMP180
 
 
 0
-5
-5
+0
+0
 Avionics_Footprints
-BMP180
+BMP388
 
 
 0
@@ -67,8 +67,8 @@ NEO_7M
 
 
 0
-0
-0
+4
+4
 Avionics_Footprints
 RFM95W
 
