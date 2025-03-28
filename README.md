@@ -1,9 +1,9 @@
 # Rocketry-Avionics 🚀
 
-Welcome to the **Rocketry-Avionics** repository! This project is dedicated to the development of avionics systems for rocketry. It contains all the necessary files, code, and documentation to help you understand, build, and contribute to the project. **Footprints have a bunch of issues rn, but they are more or less accurate**
-
+Welcome to the **Rocketry-Avionics** repository! This project is dedicated to the development of avionics systems for rocketry. It contains all the necessary files, code, and documentation to help you understand, build, and contribute to the project. 
 ---
-
+**Footprints have a bunch of issues rn, but they are more or less accurate**
+---
 ## 📁 Repository Contents
 
 This repository contains the following:
