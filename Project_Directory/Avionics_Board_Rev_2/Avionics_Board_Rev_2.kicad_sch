@@ -183,12 +183,12 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "VelR:NEO-7M"
+		(symbol "VelR:BUCK_CONVERTER"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at 0 -2.54 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -230,30 +230,60 @@
 					(hide yes)
 				)
 			)
-			(symbol "NEO-7M_1_1"
+			(symbol "BUCK_CONVERTER_0_1"
 				(rectangle
-					(start -5.08 3.81)
-					(end 5.08 -7.62)
+					(start -5.08 6.35)
+					(end 6.35 -6.35)
 					(stroke
 						(width 0)
 						(type default)
 					)
 					(fill
-						(type background)
+						(type none)
 					)
 				)
-				(text "NEO-7M"
-					(at 9.398 5.08 0)
-					(effects
-						(font
-							(size 1.27 1.27)
+			)
+			(symbol "BUCK_CONVERTER_1_1"
+				(pin power_in line
+					(at -7.62 3.81 0)
+					(length 2.54)
+					(name "Vin"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
 						)
 					)
 				)
-				(pin output line
+				(pin power_in line
+					(at -7.62 1.27 0)
+					(length 2.54)
+					(name "Vin"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
 					(at -7.62 -1.27 0)
 					(length 2.54)
-					(name "Tx"
+					(name "Vin"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -269,27 +299,9 @@
 					)
 				)
 				(pin power_in line
-					(at 1.27 6.35 270)
+					(at -7.62 -3.81 0)
 					(length 2.54)
-					(name "VCC"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at 1.27 -10.16 90)
-					(length 2.54)
-					(name "GND"
+					(name "Vin"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -304,17 +316,71 @@
 						)
 					)
 				)
-				(pin input line
-					(at 7.62 -1.27 180)
+				(pin power_out line
+					(at 8.89 3.81 180)
 					(length 2.54)
-					(name "Rx"
+					(name "Vout"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 8.89 1.27 180)
+					(length 2.54)
+					(name "Vout"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 8.89 -1.27 180)
+					(length 2.54)
+					(name "Vout"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 8.89 -3.81 180)
+					(length 2.54)
+					(name "Vout"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2083,79 +2149,150 @@
 			)
 			(embedded_fonts no)
 		)
-	)
-	(symbol
-		(lib_id "VelR:NEO-7M")
-		(at 237.49 110.49 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "08bdea40-2d62-49ed-a24d-8dfac570a46d")
-		(property "Reference" "U4"
-			(at 254 105.3398 0)
-			(effects
-				(font
-					(size 1.27 1.27)
+		(symbol "VelR:neo-7m"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
 				)
 			)
-		)
-		(property "Value" "~"
-			(at 254 107.8798 0)
-			(effects
-				(font
-					(size 1.27 1.27)
+			(property "Value" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
 				)
 			)
-		)
-		(property "Footprint" ""
-			(at 237.49 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 237.49 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 237.49 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "d8f980ea-0ce2-4d50-8268-7aded268aebd")
-		)
-		(pin "1"
-			(uuid "6b4404b4-3f15-4fab-90fa-0b54d72b8aa3")
-		)
-		(pin "3"
-			(uuid "420dd8e6-238b-47d7-86a0-ed27286a2888")
-		)
-		(pin "2"
-			(uuid "2b699d80-052c-4352-b558-3ed170bb2f27")
-		)
-		(instances
-			(project ""
-				(path "/d97b3dcb-6a87-4cc6-862f-281d47ed4b8f"
-					(reference "U4")
-					(unit 1)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
 				)
 			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "neo-7m_0_1"
+				(rectangle
+					(start -5.08 5.08)
+					(end 5.08 -5.08)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "neo-7m_1_1"
+				(text "NEO_7M\n"
+					(at 3.302 -0.254 900)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(pin power_in line
+					(at -7.62 3.81 0)
+					(length 2.54)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -7.62 1.27 0)
+					(length 2.54)
+					(name "RX"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at -7.62 -1.27 0)
+					(length 2.54)
+					(name "TX"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -7.62 -3.81 0)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
 		)
 	)
 	(symbol
@@ -2608,6 +2745,168 @@
 			(project ""
 				(path "/d97b3dcb-6a87-4cc6-862f-281d47ed4b8f"
 					(reference "U3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "VelR:neo-7m")
+		(at 213.36 107.95 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "bb9d5ada-b5a5-4444-b14f-ac1b4c75c7c6")
+		(property "Reference" "U6"
+			(at 213.36 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "~"
+			(at 219.71 107.9499 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 213.36 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 213.36 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 213.36 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4824d262-738b-4d11-85a8-b350bd879246")
+		)
+		(pin "3"
+			(uuid "d084c41f-7922-4d11-a9e8-9bbf3ed98deb")
+		)
+		(pin "4"
+			(uuid "4e2c372a-11d6-4316-9fee-1ae8ee3c0718")
+		)
+		(pin "2"
+			(uuid "179d9d46-e7d9-45c3-8d2b-2c6f12f0d35f")
+		)
+		(instances
+			(project ""
+				(path "/d97b3dcb-6a87-4cc6-862f-281d47ed4b8f"
+					(reference "U6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "VelR:BUCK_CONVERTER")
+		(at 55.88 96.52 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c40099fd-54e9-4493-9146-61ad811ba09e")
+		(property "Reference" "U5"
+			(at 56.515 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "~"
+			(at 56.515 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 55.88 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 55.88 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 55.88 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "6"
+			(uuid "8f419bff-3e10-4276-b386-aa4ebecf5d9a")
+		)
+		(pin "4"
+			(uuid "09b928d3-fb86-48c9-b200-c60c0ae1da53")
+		)
+		(pin "1"
+			(uuid "cca8c5dc-d42a-44ee-90b3-b0eb53614f1f")
+		)
+		(pin "8"
+			(uuid "f7e422d5-26bf-4112-9d79-ce7ea5a20ea4")
+		)
+		(pin "5"
+			(uuid "f769b8c9-2570-4dc3-a9a1-0f9dcae7d524")
+		)
+		(pin "3"
+			(uuid "05113788-e7b1-4f5b-9e22-004131110195")
+		)
+		(pin "2"
+			(uuid "4e83cb26-a66e-4d85-8671-6dbb58715618")
+		)
+		(pin "7"
+			(uuid "d06db8f9-780c-4cb2-8f42-a10bfa1f9eaf")
+		)
+		(instances
+			(project ""
+				(path "/d97b3dcb-6a87-4cc6-862f-281d47ed4b8f"
+					(reference "U5")
 					(unit 1)
 				)
 			)
