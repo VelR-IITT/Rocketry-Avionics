@@ -1,4 +1,4 @@
-26762028855638175
+26783288899675442
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -106364,3 +106364,87 @@ Varistor VF
 0
 2
 2
+VelR
+CAP_ads1115
+
+
+0
+2
+2
+VelR
+IRFR024NTRPBF-HXY Mosfet
+
+
+0
+3
+3
+VelR
+JST-SH 1mm 4 Pin Male E Type Vertical Single Row WTB Connector
+
+
+0
+6
+5
+VelR
+RFM95W
+
+
+0
+16
+16
+VelR
+SIM800L
+
+
+0
+11
+6
+VelR
+SMD_xl_1615 RGB
+
+
+0
+4
+4
+VelR
+SS34(flyback)
+
+
+0
+2
+2
+VelR
+Teensy_4.1
+
+
+0
+53
+53
+VelR
+XL-z3535rgbasg_RGB_LED
+
+
+0
+6
+6
+VelR
+buck converter
+
+
+0
+8
+8
+VelR
+diode_
+Diode SMA (DO-214AC)
+Diode SMA (DO-214AC)
+0
+2
+2
+VelR
+gy91
+
+
+0
+8
+8
