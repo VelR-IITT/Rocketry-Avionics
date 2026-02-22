@@ -1984,26 +1984,32 @@
 			(embedded_fonts no)
 		)
 		(symbol "VelR5:GSM_Module"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "U"
-				(at 0 0 0)
+			(property "Reference" "U10"
+				(at 0 13.97 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" ""
-				(at 0 0 0)
+			(property "Value" "GSM"
+				(at 0 11.43 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "VelR:SIM800L"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2044,24 +2050,6 @@
 				)
 			)
 			(symbol "GSM_Module_1_1"
-				(pin input line
-					(at -13.97 6.35 0)
-					(length 2.54)
-					(name "NET"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 				(pin power_in line
 					(at -13.97 3.81 0)
 					(length 2.54)
@@ -6965,6 +6953,30 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "fdc87996-be8e-4ac6-b470-be4742c0ac29")
+	)
+	(no_connect
+		(at 248.92 72.39)
+		(uuid "3407ac9d-9293-4051-9f27-3e3cdf0ae4f1")
+	)
+	(no_connect
+		(at 248.92 69.85)
+		(uuid "6a00af11-0f01-4b31-b911-eeea78271eac")
+	)
+	(no_connect
+		(at 248.92 62.23)
+		(uuid "b1beb499-5063-44d3-86cc-750f1efb99bb")
+	)
+	(no_connect
+		(at 248.92 59.69)
+		(uuid "dbf9a496-342d-4a6e-ace5-edb912a9876a")
+	)
+	(no_connect
+		(at 248.92 67.31)
+		(uuid "dfe51b11-1599-423d-9db6-1ab8d4fade05")
+	)
+	(no_connect
+		(at 248.92 64.77)
+		(uuid "f8cade3d-c3d8-49a4-84ca-c2be9ff8b74d")
 	)
 	(wire
 		(pts
@@ -20246,7 +20258,7 @@
 				)
 			)
 		)
-		(property "Footprint" "VelR:SIM800L"
+		(property "Footprint" "Connector_JST:JST_EH_B5B-EH-A_1x05_P2.50mm_Vertical"
 			(at 234.95 66.04 0)
 			(effects
 				(font
@@ -20284,9 +20296,6 @@
 		)
 		(pin "6"
 			(uuid "dac9cc25-c224-404d-a10f-22d04bb89b44")
-		)
-		(pin "1"
-			(uuid "46c7f135-4f0d-4c7f-86b9-c9da9cea4be9")
 		)
 		(pin "7"
 			(uuid "ec25ef18-da27-414f-aa8d-8d031ff84241")
