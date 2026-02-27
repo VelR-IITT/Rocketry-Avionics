@@ -1,4 +1,4 @@
-26785061837819229
+26790378432447811
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -106365,6 +106365,20 @@ Varistor VF
 2
 2
 VelR
+ADXL377_SparkFun_Module
+
+
+0
+6
+6
+VelR
+Buzzer_TMB12A05
+
+
+0
+2
+2
+VelR
 CAP_ads1115
 
 
@@ -106427,6 +106441,13 @@ Teensy_4.1
 0
 53
 53
+VelR
+Untitled
+
+
+0
+0
+0
 VelR
 XL-z3535rgbasg_RGB_LED
 
