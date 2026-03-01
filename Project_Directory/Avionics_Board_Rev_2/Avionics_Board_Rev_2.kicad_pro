@@ -487,7 +487,7 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 2147483647,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.2,
+        "track_width": 3.0,
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
@@ -495,48 +495,63 @@
       {
         "name": "Analog",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 1,
+        "priority": 2,
         "schematic_color": "rgb(255, 3, 247)",
+        "track_width": 0.25,
         "wire_width": 10
       },
       {
         "name": "Pyro",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 5,
+        "priority": 6,
         "schematic_color": "rgb(255, 15, 0)",
+        "track_width": 3.0,
         "wire_width": 6
       },
       {
         "name": "Pyro_Signal",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 0,
-        "schematic_color": "rgb(255, 0, 109)"
+        "priority": 1,
+        "schematic_color": "rgb(255, 0, 109)",
+        "track_width": 0.25
       },
       {
         "name": "RF",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 3,
+        "priority": 4,
         "schematic_color": "rgb(0, 3, 255)",
+        "track_width": 1.0,
         "wire_width": 6
       },
       {
         "name": "Signal",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 2,
+        "priority": 3,
         "schematic_color": "rgb(0, 255, 33)",
+        "track_width": 0.25,
+        "wire_width": 10
+      },
+      {
+        "name": "battery",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0,
+        "schematic_color": "rgb(3, 224, 255)",
+        "track_width": 3.0,
         "wire_width": 10
       },
       {
         "name": "gnd",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 4,
-        "schematic_color": "rgb(0, 0, 0)"
+        "priority": 5,
+        "schematic_color": "rgb(0, 0, 0)",
+        "track_width": 0.5
       },
       {
         "name": "power",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 6,
+        "priority": 7,
         "schematic_color": "rgb(255, 69, 0)",
+        "track_width": 0.5,
         "wire_width": 6
       }
     ],
@@ -753,6 +768,34 @@
       {
         "netclass": "Signal",
         "pattern": "/Buzzer"
+      },
+      {
+        "netclass": "battery",
+        "pattern": "/GND_PWR"
+      },
+      {
+        "netclass": "battery",
+        "pattern": "+BATT"
+      },
+      {
+        "netclass": "battery",
+        "pattern": "+VDC"
+      },
+      {
+        "netclass": "Pyro",
+        "pattern": "/D_1"
+      },
+      {
+        "netclass": "Pyro",
+        "pattern": "/D_2"
+      },
+      {
+        "netclass": "Pyro",
+        "pattern": "/D_3"
+      },
+      {
+        "netclass": "Pyro",
+        "pattern": "/D_4"
       }
     ]
   },

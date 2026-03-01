@@ -18,6 +18,7 @@
 	(property "Value" "IRFR024NTRPBF-HXY Mosfet"
 		(at 4.355 5.155 0)
 		(layer "F.Fab")
+		(hide yes)
 		(uuid "a5b262fa-7a38-41df-9099-03e6ea95259e")
 		(effects
 			(font
@@ -310,6 +311,45 @@
 		(fill no)
 		(layer "F.Fab")
 		(uuid "adea4fde-8526-4656-98b0-170b5327a711")
+	)
+	(fp_text user "S"
+		(at -3.5 -0.5 90)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "42d6a9c6-f4fe-457c-b19d-6f8ec07545ac")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "G"
+		(at -4.778718 0.497823 270)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "ae8bb7a7-c753-4b05-ba1d-63b8a8c0891e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(fp_text user "D"
+		(at -2 -0.5 270)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "e29a11a8-28cb-40cc-8136-9b8ce70391d6")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
 	)
 	(pad "1" smd rect
 		(at -4.14 -2.29)
