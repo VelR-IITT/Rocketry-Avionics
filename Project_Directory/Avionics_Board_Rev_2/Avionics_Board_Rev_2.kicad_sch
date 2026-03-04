@@ -12813,7 +12813,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "300k"
 			(at 161.29 252.7299 0)
 			(effects
 				(font
@@ -12883,7 +12883,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "500k"
+		(property "Value" "100k"
 			(at 31.75 146.0499 0)
 			(effects
 				(font
@@ -16149,7 +16149,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "100k"
 			(at 161.29 264.1599 0)
 			(effects
 				(font
@@ -17205,7 +17205,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "100k"
 			(at 161.29 210.8199 0)
 			(effects
 				(font
@@ -17883,7 +17883,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "100k"
 			(at 125.73 199.8979 0)
 			(effects
 				(font
@@ -18521,7 +18521,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "100k"
 			(at 125.73 253.2379 0)
 			(effects
 				(font
@@ -19457,7 +19457,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "100k"
 			(at 233.68 264.1599 0)
 			(effects
 				(font
@@ -20480,7 +20480,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "300k"
 			(at 161.29 199.3899 0)
 			(effects
 				(font
@@ -21330,7 +21330,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "300k"
 			(at 231.14 199.3899 0)
 			(effects
 				(font
@@ -23479,7 +23479,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "300k"
 			(at 233.68 252.7299 0)
 			(effects
 				(font
@@ -23679,7 +23679,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "100k"
 			(at 198.12 253.2379 0)
 			(effects
 				(font
@@ -24247,7 +24247,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "20k"
+		(property "Value" "100k"
 			(at 195.58 199.8979 0)
 			(effects
 				(font
@@ -24450,7 +24450,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "100k"
 			(at 231.14 210.8199 0)
 			(effects
 				(font
