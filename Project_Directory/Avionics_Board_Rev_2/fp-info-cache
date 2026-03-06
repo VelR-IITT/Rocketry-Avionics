@@ -1,4 +1,4 @@
-26792152314039334
+26793925676341919
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -106464,6 +106464,13 @@ XL-z3535rgbasg_RGB_LED
 6
 VelR
 buck converter
+
+
+0
+8
+8
+VelR
+buck converter_corrected
 
 
 0

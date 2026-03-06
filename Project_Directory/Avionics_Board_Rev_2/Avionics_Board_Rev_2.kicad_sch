@@ -3077,6 +3077,305 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Transistor_FET:BSS138"
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "BSS138"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+				(at 5.08 -1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/BSS138-D.PDF"
+				(at 5.08 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Description" "50V Vds, 0.22A Id, N-Channel MOSFET, SOT-23"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "N-Channel MOSFET"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "BSS138_0_1"
+				(polyline
+					(pts
+						(xy 0.254 1.905) (xy 0.254 -1.905)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 0) (xy -2.54 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 2.286) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 0.508) (xy 0.762 -0.508)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -1.27) (xy 0.762 -2.286)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -1.778) (xy 3.302 -1.778) (xy 3.302 1.778) (xy 0.762 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.016 0) (xy 2.032 0.381) (xy 2.032 -0.381) (xy 1.016 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(circle
+					(center 1.651 0)
+					(radius 2.794)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.54) (xy 2.54 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.54 1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(circle
+					(center 2.54 -1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 -2.54) (xy 2.54 0) (xy 0.762 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.921 0.381) (xy 3.683 0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.302 0.381) (xy 2.921 -0.254) (xy 3.683 -0.254) (xy 3.302 0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "BSS138_1_1"
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "VelR11:XL-Z3535RGBA-SG COPY"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -8242,6 +8541,12 @@
 		)
 	)
 	(junction
+		(at 80.01 166.37)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "00abaa90-0a00-4e68-a8dd-866c65414d66")
+	)
+	(junction
 		(at 196.85 71.12)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8290,6 +8595,12 @@
 		(uuid "2f012217-0350-4444-b82c-cff40276948b")
 	)
 	(junction
+		(at 54.61 176.53)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "39d5b805-e30c-49ad-b755-ddd766f66f8d")
+	)
+	(junction
 		(at 140.97 240.03)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8308,12 +8619,6 @@
 		(uuid "483faff0-4358-400c-97da-98d5c0638b1b")
 	)
 	(junction
-		(at 54.61 163.83)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "4a534307-419a-44d8-8bbe-f7ddd4a385c0")
-	)
-	(junction
 		(at 104.14 176.53)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8324,12 +8629,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4e65e8ce-a0dc-4675-8313-8fdae13d726d")
-	)
-	(junction
-		(at 80.01 176.53)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "51562131-980b-40b7-b01c-7ddacad9293b")
 	)
 	(junction
 		(at 62.23 200.66)
@@ -8366,6 +8665,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6c141e45-9e8c-45ff-b661-7e082e900394")
+	)
+	(junction
+		(at 80.01 176.53)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6d9f1a6c-e996-478a-82fa-71eb602617b8")
 	)
 	(junction
 		(at 137.16 199.39)
@@ -8410,16 +8715,16 @@
 		(uuid "84582e64-f22c-45cb-8338-5725becd35a5")
 	)
 	(junction
-		(at 80.01 166.37)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "88874d42-c716-42cb-96d6-08eb03a1164c")
-	)
-	(junction
 		(at 83.82 167.64)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8a7a2eba-f66a-45d6-af75-a298f2813fb1")
+	)
+	(junction
+		(at 54.61 173.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "92a1d795-7a46-4078-9394-a732720d88ef")
 	)
 	(junction
 		(at 215.9 189.23)
@@ -8432,12 +8737,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9a4d0362-1b1f-4aee-8aef-65f706dcea41")
-	)
-	(junction
-		(at 54.61 176.53)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "9ea548e3-84ae-4e8a-b8c6-110c10b2b264")
 	)
 	(junction
 		(at 146.05 242.57)
@@ -8456,6 +8755,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b7d5ba3e-adb3-4ccf-903e-f25fbd8343f0")
+	)
+	(junction
+		(at 54.61 163.83)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b8bed6b4-9827-436a-84fa-608e415b69e7")
 	)
 	(junction
 		(at 213.36 240.03)
@@ -9457,6 +9762,16 @@
 	)
 	(wire
 		(pts
+			(xy 54.61 162.56) (xy 54.61 163.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "688cf945-ad55-4eb6-83e6-3f775df1ba6c")
+	)
+	(wire
+		(pts
 			(xy 137.16 186.69) (xy 140.97 186.69)
 		)
 		(stroke
@@ -9817,6 +10132,16 @@
 	)
 	(wire
 		(pts
+			(xy 54.61 173.99) (xy 55.88 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9229c804-b639-46c8-8f1f-f66a50c0f6fc")
+	)
+	(wire
+		(pts
 			(xy 25.4 128.27) (xy 26.67 128.27)
 		)
 		(stroke
@@ -9964,16 +10289,6 @@
 			(type default)
 		)
 		(uuid "a4ce3004-8ebd-469e-84b1-dba1c0f95021")
-	)
-	(wire
-		(pts
-			(xy 54.61 162.56) (xy 54.61 163.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a5ed6d45-7601-4dcb-b9d8-c4eed48a640c")
 	)
 	(wire
 		(pts
@@ -10297,6 +10612,16 @@
 	)
 	(wire
 		(pts
+			(xy 54.61 163.83) (xy 54.61 166.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ce5f46e9-7abb-4410-a969-e3aed22eceea")
+	)
+	(wire
+		(pts
 			(xy 39.37 144.78) (xy 34.29 144.78)
 		)
 		(stroke
@@ -10374,16 +10699,6 @@
 			(type default)
 		)
 		(uuid "dc4c0927-49cd-4016-a3a0-b912b4a70342")
-	)
-	(wire
-		(pts
-			(xy 54.61 163.83) (xy 54.61 166.37)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dd51fabe-10cb-4fe8-ae33-4cf1cb10774a")
 	)
 	(wire
 		(pts
@@ -15661,16 +15976,16 @@
 	)
 	(symbol
 		(lib_id "VelR3:BUCK_CONVERTER_new")
-		(at 67.31 170.18 180)
+		(at 67.31 170.18 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "345560fd-ecb0-49ae-8d73-0a7e42420c60")
 		(property "Reference" "Buck_Converter1"
-			(at 67.31 154.94 0)
+			(at 67.31 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15678,14 +15993,14 @@
 			)
 		)
 		(property "Value" "buck converter"
-			(at 67.31 157.48 0)
+			(at 67.31 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "VelR:buck converter"
+		(property "Footprint" "VelR:buck converter_corrected"
 			(at 67.31 170.18 0)
 			(effects
 				(font
@@ -15884,7 +16199,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Simulation_SPICE:NMOS")
+		(lib_id "Transistor_FET:BSS138")
 		(at 207.01 259.08 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15910,25 +16225,28 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SC-59_Handsoldering"
-			(at 212.09 256.54 0)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 212.09 260.985 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/BSS138-D.PDF"
+			(at 212.09 262.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_MOSFETs"
-			(at 207.01 271.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "N-MOSFET transistor, drain/source/gate"
+		(property "Description" "50V Vds, 0.22A Id, N-Channel MOSFET, SOT-23"
 			(at 207.01 259.08 0)
 			(effects
 				(font
@@ -21694,7 +22012,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Simulation_SPICE:NMOS")
+		(lib_id "Transistor_FET:BSS138")
 		(at 134.62 205.74 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -21720,25 +22038,28 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SC-59_Handsoldering"
-			(at 139.7 203.2 0)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 139.7 207.645 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/BSS138-D.PDF"
+			(at 139.7 209.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_MOSFETs"
-			(at 134.62 218.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "N-MOSFET transistor, drain/source/gate"
+		(property "Description" "50V Vds, 0.22A Id, N-Channel MOSFET, SOT-23"
 			(at 134.62 205.74 0)
 			(effects
 				(font
@@ -22066,7 +22387,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Simulation_SPICE:NMOS")
+		(lib_id "Transistor_FET:BSS138")
 		(at 204.47 205.74 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -22092,25 +22413,28 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SC-59_Handsoldering"
-			(at 209.55 203.2 0)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 209.55 207.645 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/BSS138-D.PDF"
+			(at 209.55 209.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_MOSFETs"
-			(at 204.47 218.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "N-MOSFET transistor, drain/source/gate"
+		(property "Description" "50V Vds, 0.22A Id, N-Channel MOSFET, SOT-23"
 			(at 204.47 205.74 0)
 			(effects
 				(font
@@ -25332,7 +25656,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Simulation_SPICE:NMOS")
+		(lib_id "Transistor_FET:BSS138")
 		(at 134.62 259.08 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -25358,25 +25682,28 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SC-59_Handsoldering"
-			(at 139.7 256.54 0)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 139.7 260.985 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/BSS138-D.PDF"
+			(at 139.7 262.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_MOSFETs"
-			(at 134.62 271.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "N-MOSFET transistor, drain/source/gate"
+		(property "Description" "50V Vds, 0.22A Id, N-Channel MOSFET, SOT-23"
 			(at 134.62 259.08 0)
 			(effects
 				(font
