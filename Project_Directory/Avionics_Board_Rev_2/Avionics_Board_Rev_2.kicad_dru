@@ -1,0 +1,4 @@
+(version 1)
+(rule "RF_Gap"
+	(constraint clearance (min 0.15mm))
+	(condition "A.NetClass == 'LoRa_Antenna'"))
