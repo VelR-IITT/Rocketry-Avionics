@@ -104,6 +104,7 @@
 			(psnegative no)
 			(psa4output no)
 			(plot_black_and_white yes)
+			(plotinvisibletext no)
 			(sketchpadsonfab no)
 			(plotpadnumbers no)
 			(hidednponfab no)
@@ -33899,7 +33900,7 @@
 			)
 		)
 		(fp_text user "3.3/5v"
-			(at 21.12 1.67 270)
+			(at 21.086 4.792 0)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(uuid "3829c479-d178-42a0-825d-5cf51d838b8e")
@@ -43010,6 +43011,19 @@
 		(layer "Edge.Cuts")
 		(uuid "c9d8ed8d-f3c2-4cb2-b4ed-ad6a8678b676")
 	)
+	(gr_text "WARNING:\nPointy end up, Flamey end down"
+		(at 157 139.25 90)
+		(layer "F.SilkS")
+		(uuid "0a22c97a-d918-429b-89ea-e01da111bea0")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.25)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
 	(gr_text "PYRO\n"
 		(at 174.4 103.4 0)
 		(layer "F.SilkS")
@@ -43178,6 +43192,32 @@
 				(bold yes)
 			)
 			(justify left bottom)
+		)
+	)
+	(gr_text "if found return to\n13°43'06.7{dblquote}N 79°35'18.9{dblquote}E"
+		(at 163.72 30.44 0)
+		(layer "B.SilkS")
+		(uuid "5aaa8738-4b62-475c-85b8-aec7e7abc123")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.25)
+				(bold yes)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Telemetry gossip port"
+		(at 146.97 34.34 0)
+		(layer "B.SilkS")
+		(uuid "92a744c2-f51b-4075-8c63-8f7968a2fbcd")
+		(effects
+			(font
+				(size 0.7 0.7)
+				(thickness 0.175)
+				(bold yes)
+			)
+			(justify left bottom mirror)
 		)
 	)
 	(gr_text "put kapton tape on for isolation"
