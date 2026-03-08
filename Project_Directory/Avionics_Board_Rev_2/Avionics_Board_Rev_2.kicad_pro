@@ -805,7 +805,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "gerber/V-2.0.0/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "Avionics_Board_Rev_2.step",
