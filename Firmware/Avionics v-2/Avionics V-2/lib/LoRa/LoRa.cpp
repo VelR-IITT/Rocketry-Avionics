@@ -1,124 +1,140 @@
 #include "LoRa.h"
 
-LoRa::LoRa(uint8_t csPin, uint8_t irqPin, uint8_t resetPin) {
-    _cs = LoRa_CS;
-    _irq = LoRa_IRQ;
-    _reset = LoRa_RST;
+// Static instance pointer (for ISR)
+LoRa* instance = nullptr;
+
+// Static callback
+void (*LoRa::_onReceive)(int) = nullptr;
+
+// Constructor
+LoRa::LoRa(int csPin, int resetPin, int dio0Pin) {
+    _cs = csPin;
+    _reset = resetPin;
+    _dio0 = dio0Pin;
+
+    instance = this;
 }
 
-bool LoRa::init() {
+// SPI Write
+void LoRa::writeRegister(uint8_t reg, uint8_t value) {
+    digitalWrite(_cs, LOW);
+    SPI.transfer(reg | 0x80);
+    SPI.transfer(value);
+    digitalWrite(_cs, HIGH);
+}
+
+// SPI Read
+uint8_t LoRa::readRegister(uint8_t reg) {
+    digitalWrite(_cs, LOW);
+    SPI.transfer(reg & 0x7F);
+    uint8_t value = SPI.transfer(0x00);
+    digitalWrite(_cs, HIGH);
+    return value;
+}
+
+// Begin LoRa
+void LoRa::begin(long frequency) {
     pinMode(_cs, OUTPUT);
     pinMode(_reset, OUTPUT);
+    pinMode(_dio0, INPUT);
 
-    digitalWrite(_cs, HIGH);
+    SPI.begin();
 
-    LoRa.begin();
-
-    // Hardware reset
-    hardwareReset();
-
-    // Enter LoRa mode
-    writeReg(REG_OP_MODE, MODE_SLEEP | MODE_LONG_RANGE_MODE);
-    delay(10);
-
-    setModeIdle();
-
-    return true;
-}
-
-void LoRa::hardwareReset() {
+    // Reset sequence
     digitalWrite(_reset, LOW);
     delay(10);
     digitalWrite(_reset, HIGH);
     delay(10);
+
+    // Sleep mode
+    writeRegister(0x01, 0x80);
+
+    // Set frequency
+    long frf = (frequency << 19) / 32000000;
+    writeRegister(0x06, (uint8_t)(frf >> 16));
+    writeRegister(0x07, (uint8_t)(frf >> 8));
+    writeRegister(0x08, (uint8_t)(frf >> 0));
+
+    // FIFO base addresses
+    writeRegister(0x0E, 0x00);
+    writeRegister(0x0F, 0x00);
+
+    // LNA boost
+    writeRegister(0x0C, 0x23);
+
+    // Modem config (example: BW125, CR4/5, SF7)
+    writeRegister(0x1D, 0x72);
+    writeRegister(0x1E, 0x74);
+
+    // Set standby mode
+    writeRegister(0x01, 0x81);
+
+    // Setup interrupt
+    attachInterrupt(digitalPinToInterrupt(_dio0), LoRa::_interruptHandler, RISING);
 }
 
-void LoRa::setFrequency(float freq) {
-    long frf = (freq * 1000000.0 / 32000000.0) * (1 << 19);
-
-    writeReg(REG_FRF_MSB, (uint8_t)(frf >> 16));
-    writeReg(REG_FRF_MID, (uint8_t)(frf >> 8));
-    writeReg(REG_FRF_LSB, (uint8_t)(frf >> 0));
+// Static ISR
+void LoRa::_interruptHandler() {
+    if (instance) {
+        instance->handleInterrupt();
+    }
 }
 
-void LoRa::setTxPower(int8_t power) {
-    if (power > 23) power = 23;
-    if (power < 5) power = 5;
+// Handle IRQ
+void LoRa::handleInterrupt() {
+    uint8_t irqFlags = readRegister(0x12);
 
-    writeReg(REG_PA_CONFIG, 0x80 | (power - 5));
-}
+    // RX DONE
+    if (irqFlags & 0x40) {
+        int packetLength = readRegister(0x13);
 
-void LoRa::setModemConfig(ModemConfig config) {
-    writeReg(REG_MODEM_CONFIG1, config);
-    writeReg(REG_MODEM_CONFIG2, 0x74);
-}
-
-bool LoRa::send(uint8_t* data, uint8_t len) {
-    setModeIdle();
-
-    writeReg(REG_FIFO_ADDR_PTR, 0);
-
-    for (uint8_t i = 0; i < len; i++) {
-        writeReg(REG_FIFO, data[i]);
+        if (_onReceive) {
+            _onReceive(packetLength);
+        }
     }
 
-    writeReg(REG_PAYLOAD_LENGTH, len);
-
-    setModeTx();
-
-    return true;
-}
-
-void LoRa::waitPacketSent() {
-    while (!(readReg(REG_IRQ_FLAGS) & 0x08));
-
-    writeReg(REG_IRQ_FLAGS, 0x08);
-}
-
-bool LoRa::available() {
-    return (readReg(REG_IRQ_FLAGS) & 0x40);
-}
-
-bool LoRa::recv(uint8_t* buf, uint8_t* len) {
-    if (!available()) return false;
-
-    uint8_t length = readReg(REG_RX_NB_BYTES);
-    writeReg(REG_FIFO_ADDR_PTR, readReg(REG_FIFO_RX_CURRENT));
-
-    for (uint8_t i = 0; i < length; i++) {
-        buf[i] = readReg(REG_FIFO);
+    // TX DONE (optional handling)
+    if (irqFlags & 0x08) {
+        // You can add TX callback here later
     }
 
-    *len = length;
-
-    writeReg(REG_IRQ_FLAGS, 0x40);
-
-    return true;
+    // Clear all IRQ flags
+    writeRegister(0x12, 0xFF);
 }
 
-void LoRa::setModeTx() {
-    writeReg(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_TX);
+// Register callback
+void LoRa::onReceive(void (*callback)(int)) {
+    _onReceive = callback;
 }
 
-void LoRa::setModeRx() {
-    writeReg(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_RX_CONTINUOUS);
+// Set RX mode
+void LoRa::receive() {
+    // Map DIO0 → RxDone
+    writeRegister(0x40, 0x00);
+
+    // Continuous RX mode
+    writeRegister(0x01, 0x85);
 }
 
-void LoRa::setModeIdle() {
-    writeReg(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_STDBY);
-}
+// Send packet
+void LoRa::send(uint8_t *data, uint8_t length) {
+    // Standby mode
+    writeRegister(0x01, 0x81);
 
-void LoRa::writeReg(uint8_t reg, uint8_t val) {
-    digitalWrite(_cs, LOW);
-    LoRa.transfer(reg | 0x80);
-    LoRa.transfer(val);
-    digitalWrite(_cs, HIGH);
-}
+    // Reset FIFO pointer
+    writeRegister(0x0D, 0x00);
 
-uint8_t LoRa::readReg(uint8_t reg) {
-    digitalWrite(_cs, LOW);
-    LoRa.transfer(reg & 0x7F);
-    uint8_t val = SPI.transfer(0);
-    digitalWrite(_cs, HIGH);
-    return val;
+    // Write payload
+    for (int i = 0; i < length; i++) {
+        writeRegister(0x00, data[i]);
+    }
+
+    // Payload length
+    writeRegister(0x22, length);
+
+    // Map DIO0 → TxDone
+    writeRegister(0x40, 0x40);
+
+    // TX mode
+    writeRegister(0x01, 0x83);
 }

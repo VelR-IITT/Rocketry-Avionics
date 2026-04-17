@@ -8,38 +8,25 @@
 
 class LoRa {
 public:
-    enum ModemConfig {
-        Bw125Cr45Sf128 = 0x72
-    };
+    LoRa(int csPin, int resetPin, int dio0Pin);
 
-    //  Added reset pin
-    LoRa(uint8_t csPin, uint8_t irqPin, uint8_t resetPin);
+    void begin(long frequency);
+    void send(uint8_t *data, uint8_t length);
+    void receive();
 
-    bool init();
-    void setFrequency(float freq);
-    void setTxPower(int8_t power, bool useRFO = false);
-    void setModemConfig(ModemConfig config);
-
-    bool send(uint8_t* data, uint8_t len);
-    void waitPacketSent();
-
-    bool available();
-    bool recv(uint8_t* buf, uint8_t* len);
-
-    void setModeRx();
+    void onReceive(void (*callback)(int));
+    void handleInterrupt();
 
 private:
-    uint8_t _cs;
-    uint8_t _irq;
-    uint8_t _reset;  
+    int _cs;
+    int _reset;
+    int _dio0;
 
-    void writeReg(uint8_t reg, uint8_t val);
-    uint8_t readReg(uint8_t reg);
+    static void (*_onReceive)(int);
+    static void _interruptHandler();
 
-    void setModeTx();
-    void setModeIdle();
-
-    void hardwareReset();  
+    void writeRegister(uint8_t reg, uint8_t value);
+    uint8_t readRegister(uint8_t reg);
 };
 
 #endif
