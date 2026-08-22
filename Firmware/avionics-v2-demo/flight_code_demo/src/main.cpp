@@ -53,6 +53,7 @@ RH_RF95 rf95(LORA_CS, LORA_IRQ, hardware_spi1);
 typedef struct
 {
     uint32_t time;
+    uint32_t utc_time;
     int32_t  lat, lon;
     float    gps_alt, baro_alt;
     float    vx, vy, vz;
@@ -62,6 +63,7 @@ typedef struct
     
     int16_t  ax, ay, az;
     int16_t  gx, gy, gz;
+    int16_t  hx, hy, hz;
 
     
     uint8_t   temp;
@@ -75,6 +77,34 @@ typedef struct
 
 
 } telemetry_pkt_t;
+ // first 3 bits for state, next 5 bits for sats count
+
+//       error codes     //
+// bit 0 - IMU 
+// bit 1 - BARO
+// bit 2 - GPS
+// bit 3 - GSM
+// bit 4 - SD Card
+// bit 5 - LOGGING
+// bit 6 - Command received in last cycle
+// bit 7 - Ack received in last cycle
+//
+
+//      pyro states     //
+// bit 0 - pyro 1 contuinutiy
+// bit 1 - pyro 1 trigger
+// ..
+// .
+//
+volatile bool IMU_Error = false;
+volatile bool BARO_Error = false;
+volatile bool GPS_Error = false;
+volatile bool GSM_Error = false;
+volatile bool SD_Error = false;
+
+
+
+
 
 #define CMD_NONE            0x00
 #define CMD_LED_BLINK       0x01
@@ -87,6 +117,8 @@ typedef struct {
     uint8_t flags;
     uint8_t cmd_type;
     uint8_t cmd_param;
+ 
+ 
     uint16_t CRC16;
 } ack_pkt_t;
 
@@ -121,7 +153,7 @@ bmp_cal_data_t cal;
 #define LOG_TYPE_BARO 0x02
 #define LOG_TYPE_ADXL 0x03
 
-#define DATA_QUE_LEN 128
+#define DATA_QUE_LEN 256
 
 #pragma pack(push, 1)
 typedef struct 
@@ -154,6 +186,16 @@ typedef struct
    };
 } Data_t;
 #pragma pack(pop)
+
+
+volatile imu_data_t latest_imu_data;
+
+
+volatile baro_data_t latest_baro_data;  
+
+
+volatile adxl_data_t latest_adxl_data;
+
 
 
 
@@ -294,8 +336,23 @@ void LoRa_Task(void *pvParameters)
     while(1)
     {
         pkt.time = millis();
+        pkt.error_code = 0;
         pkt.error_code &= 0x3F;
-        pkt.error_code |= ((ACK_Recieved_Last_Cycle << 7) | (CMD_Recieved_Last_Cycle << 6));
+        pkt.error_code |= ((ACK_Recieved_Last_Cycle << 7) | (CMD_Recieved_Last_Cycle << 6)|
+                           (IMU_Error << 0) | (BARO_Error << 1) | (GPS_Error << 2) | (GSM_Error << 3) | (SD_Error << 4)| (Log_Enabled << 5));
+        pkt.RSSI = rf95.lastRssi();
+        pkt.ax = latest_imu_data.ax;
+        pkt.ay = latest_imu_data.ay;
+        pkt.az = latest_imu_data.az;    
+        pkt.gx = latest_imu_data.gx;
+        pkt.gy = latest_imu_data.gy;
+        pkt.gz = latest_imu_data.gz;
+        pkt.hx = latest_adxl_data.ax;
+        pkt.hy = latest_adxl_data.ay;
+        pkt.hz = latest_adxl_data.az;
+        pkt.pressure = latest_baro_data.pressure;
+        pkt.temp = latest_baro_data.temp;
+        debugPrint("%d %d %d",pkt.ax, pkt.ay, pkt.az);
         ACK_Recieved_Last_Cycle = false;
         CMD_Recieved_Last_Cycle = false;
         rf95.send((uint8_t*)&pkt, sizeof(pkt));
@@ -427,18 +484,32 @@ void IMU_Task(void *pvParameters)
     {
         xSemaphoreGive(SPI_Mutex);
         debugPrint("IMU init failed, task exiting");
+        IMU_Error = true;
         vTaskDelete(NULL);
     }
+    xSemaphoreGive(SPI_Mutex);
+    IMU_Error = false;
+
     TickType_t lastWake = xTaskGetTickCount();
     while(1)
     {
-        xSemaphoreTake(SPI_Mutex, portMAX_DELAY);
+
         Data_t data = Read_IMU();
-        xSemaphoreGive(SPI_Mutex);
-        if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
+        debugPrint("IMU read: ax=%d ay=%d az=%d gx=%d gy=%d gz=%d", data.imu.ax, data.imu.ay, data.imu.az, data.imu.gx, data.imu.gy, data.imu.gz);
+        if(Log_Enabled)
         {
-            debugPrint("Data queue full, dropping IMU data");
+             if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
+             {
+                  debugPrint("Data queue full, dropping IMU data");
+                                   
+             }
+             
         }
+        
+        latest_imu_data = {data.imu.ax, data.imu.ay, data.imu.az,
+                           data.imu.gx, data.imu.gy, data.imu.gz};
+         
+
         vTaskDelayUntil(&lastWake, pdMS_TO_TICKS(5));
     }
 }
@@ -452,29 +523,43 @@ void Baro_Task(void *pvParameters)
         debugPrint("Barometer init failed, task exiting");
         vTaskDelete(NULL);
     }
+    xSemaphoreGive(SPI_Mutex);
     TickType_t lastWake = xTaskGetTickCount();
     while(1)
     {
         Data_t data = Read_Baro();
-        if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
+        if(Log_Enabled)
         {
-            debugPrint("Data queue full, dropping baro data");
+            if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
+            {
+                debugPrint("Data queue full, dropping baro data");
+            }
         }
+        latest_baro_data = {data.baro.pressure, data.baro.temp};
         vTaskDelayUntil(&lastWake, pdMS_TO_TICKS(10));
     }
 }
 
 void ADXL_Task(void *pvParameters)
 {
-    ADXL_Init();
+    if(!ADXL_Init())
+    {
+        debugPrint("ADXL init failed, task exiting");
+        vTaskDelete(NULL);
+    }
+
     TickType_t lastWake = xTaskGetTickCount();
     while(1)
     {
         Data_t data = Read_ADXL();
-        if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
+        if(Log_Enabled)
         {
-            debugPrint("Data queue full, dropping ADXL data");
+            if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
+            {
+                 debugPrint("Data queue full, dropping ADXL data");
+            }
         }
+        latest_adxl_data = {data.adxl.ax, data.adxl.ay, data.adxl.az};
         vTaskDelayUntil(&lastWake, pdMS_TO_TICKS(10));
     }
 }
@@ -487,12 +572,18 @@ void Transfer_SD(void *pvParameters)
         vTaskDelete(NULL);
     }
     snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
+
+
+    if(SD.exists(filename)) SD.remove(filename);
+
     SD_file = SD.open(filename, FILE_WRITE);
     if(!SD_file)
     {
         debugPrint("Failed to open file on SD card for writing");
         vTaskDelete(NULL);
     }
+
+    debugPrint("Transferring log file to SD card as %s", filename);
 
     log_file = lfs.open(filename, FILE_READ);
     if(!log_file)
@@ -513,14 +604,17 @@ void Transfer_SD(void *pvParameters)
     log_file.close();
     debugPrint("Log file transferred to SD card as %s", filename);
     char index_buf[16];
-    snprintf(index_buf, sizeof(index_buf), "%lu_%c\n", flight_count,'T');
+    flight_count++;
+    snprintf(index_buf, sizeof(index_buf), "%c_%c\n", flight_count,'T');
+    lfs.remove("/INDEX.txt");
     log_file = lfs.open("/INDEX.txt", FILE_WRITE);
+    debugPrint("Updating index file with flight %lu", flight_count);
     log_file.write(index_buf);
     log_file.flush();
     log_file.close();
 
     File_Transferred = true;
-    flight_count++;
+    
 
     lfs.remove(filename);
 
@@ -546,9 +640,15 @@ void Data_Log_Task(void *pvParameters)
             Data_t data;
             int count = 0;
             uint32_t lastSync = xTaskGetTickCount();
+            snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
+            log_file = lfs.open(filename, FILE_WRITE);
+            if(!log_file)
+            {
+                debugPrint("Failed to open log file for loggging !");
+            }
             while(Log_Enabled)
             {
-                if(xQueueReceive(Data_Queue, &data, portMAX_DELAY) == pdTRUE)
+                if((xQueueReceive(Data_Queue, &data, 1000) == pdTRUE))
                 {   
                     log_file.write((const uint8_t*)&data, sizeof(data));
                     count++;
@@ -558,7 +658,7 @@ void Data_Log_Task(void *pvParameters)
 
                     if (by_count || by_time) 
                     {
-                        log_file.flush();
+                        //log_file.flush();
                         lastSync = millis();
                         if (count % 2000 == 0)
                         debugPrint("[LOG] %lu records, q=%u",
@@ -574,16 +674,20 @@ void Data_Log_Task(void *pvParameters)
 
             log_file.flush();
             log_file.close();
-            snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
+
+            
+
+            snprintf(filename, sizeof(filename), "/INDEX.txt", flight_count);
             log_file = lfs.open(filename, FILE_WRITE);
             char index_buf[16];
-            snprintf(index_buf, sizeof(index_buf), "%lu_%c\n", flight_count,'N');
+            snprintf(index_buf, sizeof(index_buf), "%c_%c\n", flight_count,'N');
             log_file.write(index_buf);
             log_file.flush();
             log_file.close();
             File_Transferred = false;
+            
             debugPrint("Logging stopped");
-
+            debugPrint("Initiating transfer of %s", filename);
             xTaskCreate(Transfer_SD, "SD_TRANSFER", 4096, nullptr, 8, nullptr);
         }
         else
@@ -603,6 +707,7 @@ void Data_Log_Task(void *pvParameters)
 void setup()
 {
   Serial.begin(115200);
+  GY_91.begin();
 
   delay(100);
 
@@ -621,8 +726,8 @@ void setup()
   xTaskCreate(DebugTask     , "DEBUG"   , 512   , nullptr, 1, nullptr);
   xTaskCreate(LoRa_Task     , "LORA"    , 2048  , nullptr, 3, nullptr);
   xTaskCreate(Cmd_Task      , "CMD"     , 1024  , nullptr, 2, nullptr);
-  //xTaskCreate(IMU_Task      , "IMU"     , 1024  , nullptr, 7, nullptr);
-  //xTaskCreate(Baro_Task     , "BARO"    , 1024  , nullptr, 6, nullptr);
+  xTaskCreate(IMU_Task      , "IMU"     , 2048  , nullptr, 7, nullptr);
+  xTaskCreate(Baro_Task     , "BARO"    , 2048  , nullptr, 6, nullptr);
   xTaskCreate(ADXL_Task     , "ADXL"    , 1024  , nullptr, 5, nullptr);
   xTaskCreate(Data_Log_Task , "LOG"     , 8192  , nullptr, 4, nullptr);
 
@@ -718,13 +823,14 @@ bool BARO_Init()
     spi_reg_write(0xE0, 0xB6, BMP_CS); // reset
     vTaskDelay(pdMS_TO_TICKS(10));
     uint8_t id = spi_reg_read(0xD0, BMP_CS);
-    if(id != 0x60)
+    if(id != 0x58)
     {
         debugPrint("Barometer not found: ID = 0x%02X", id);
+        BARO_Error = true;
         return false;
     }
     debugPrint("Barometer found ID: 0x%02X", id);
-    return true;
+    BARO_Error = false;
     uint8_t cb[24];
     spi_reg_read_burst_bmp(0x88, cb, 24);
 
@@ -764,8 +870,11 @@ bool ADXL_Init()
     if(err != 0)
     {
         debugPrint("ADS init failed: I2C error %d", err);
+        IMU_Error = true;
         return false;
     }
+    IMU_Error = false;
+    debugPrint("ADS initialized successfully");
     return true;
 }
 
@@ -777,7 +886,9 @@ Data_t Read_IMU()
     data.type = LOG_TYPE_IMU; 
     data.time = millis();
 
+    xSemaphoreTake(SPI_Mutex, portMAX_DELAY);
     spi_reg_read_burst_imu(0x3B, buf, 14);
+    xSemaphoreGive(SPI_Mutex);
 
     data.imu.ax = (int16_t)((buf[0] << 8) | buf[1]);
     data.imu.ay = (int16_t)((buf[2] << 8) | buf[3]);
@@ -794,7 +905,10 @@ Data_t Read_Baro()
     Data_t data = {0};
     data.type = LOG_TYPE_BARO;
     data.time = millis();
+    xSemaphoreTake(SPI_Mutex, portMAX_DELAY);
     spi_reg_read_burst_bmp(0xF7, raw, 6);
+    xSemaphoreGive(SPI_Mutex);
+
     int32_t adc_P = ((int32_t)raw[0] << 12) |
                     ((int32_t)raw[1] <<  4) |
                     (raw[2] >> 4);
@@ -878,11 +992,30 @@ bool flash_init()
     }
     debugPrint("LittleFS initialized successfully");
     log_file = lfs.open("/INDEX.txt", FILE_READ);
-    flight_count = log_file.parseInt();
-    log_file.read();
-    char c = log_file.read();
-    log_file.close();
+    if(!log_file)
+    {
+        debugPrint("No index file found, ");
+        flight_count = 0;
+        log_file = lfs.open("/INDEX.txt", FILE_WRITE);
+        if(!log_file)       
+        {
+            debugPrint("Failed to create index file !");
+            return false;
+        }
+        log_file.write(0x00);
+        log_file.write("_");
+        log_file.write("N");
+        log_file.flush();
+        debugPrint("Index file created with flight count 0");
 
+    }
+    
+    flight_count = (uint8_t)log_file.read();
+    
+    char c = log_file.read();
+    c = log_file.read();
+    log_file.close();
+    debugPrint("Last flight count: %lu, transferred: %c", flight_count, c);
     if(c == 'T')
     {
     snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
