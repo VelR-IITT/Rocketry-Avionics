@@ -1,3 +1,27 @@
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//     fix bmp 280
+// to do: fix adxl offset 
+//        fix logging system
+//        add gps
+//        add gsm
+//        test pyro circuit  
+//        recovery logic
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                                                                              BOARD ORIENTATION
+//                                                                                                ^ +z (UP)
+//                                                                                                |    
+//                                                                                                |
+//                                                                                                |   
+//                                                                                                . -------------- >+Y
+//                                                                                                + X (TOWARDS YOU)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <Arduino.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -12,6 +36,8 @@
 
 #include <LittleFS.h>
 #include <SD.h>
+
+#include "GPS.h"
 
 
 #define DEBUG_MSG_LEN 80
@@ -55,7 +81,7 @@ typedef struct
     uint32_t time;
     uint32_t utc_time;
     int32_t  lat, lon;
-    float    gps_alt, baro_alt;
+    int32_t  gps_alt, baro_alt;
     float    vx, vy, vz;
     float    roll, pitch, yaw;
     float    pressure;    
@@ -71,7 +97,7 @@ typedef struct
     uint8_t   state;
     uint8_t   error_code; 
     uint8_t   pyro_state;
-    uint8_t    RSSI;
+    uint8_t   RSSI;
 
     uint16_t  CRC16;
 
@@ -96,22 +122,6 @@ typedef struct
 // ..
 // .
 //
-volatile bool IMU_Error = false;
-volatile bool BARO_Error = false;
-volatile bool GPS_Error = false;
-volatile bool GSM_Error = false;
-volatile bool SD_Error = false;
-
-
-
-
-
-#define CMD_NONE            0x00
-#define CMD_LED_BLINK       0x01
-#define CMD_LED_OFF         0x02
-#define CMD_LOG_START       0x03
-#define CMD_LOG_STOP        0x04
-#define CMD_TRIG_PYRO       0x05  
 
 typedef struct {
     uint8_t flags;
@@ -124,9 +134,25 @@ typedef struct {
 
 #pragma pack(pop)
 
+volatile bool IMU_Error = false;
+volatile bool BARO_Error = false;
+volatile bool GPS_Error = false;
+volatile bool GSM_Error = false;
+volatile bool SD_Error = false;
+
+
+#define CMD_NONE            0x00
+#define CMD_LED_BLINK       0x01
+#define CMD_LED_OFF         0x02
+#define CMD_LOG_START       0x03
+#define CMD_LOG_STOP        0x04
+#define CMD_TRIG_PYRO       0x05  
+
 #define GY_91       SPI
 #define IMU_CS      37
 #define BMP_CS      36
+
+
 
 #define ACCEL_H     Wire1
 #define ADS_ADDR     0x48
@@ -140,18 +166,20 @@ uint16_t cfg_x = CFG_BASE | (0b100 << 12);  // MUX = AIN0 vs GND
 uint16_t cfg_y = CFG_BASE | (0b101 << 12);
 uint16_t cfg_z = CFG_BASE | (0b110 << 12);
 
-typedef struct 
-{
-    uint16_t T1, T2, T3;
-    uint16_t P1, P2, P3, P4, P5, P6, P7, P8, P9;
-
-}bmp_cal_data_t;
+typedef struct {
+    uint16_t T1;
+    int16_t  T2, T3;
+    uint16_t P1;
+    int16_t  P2, P3, P4, P5, P6, P7, P8, P9;
+   } bmp_cal_data_t;
 
 bmp_cal_data_t cal;
 
-#define LOG_TYPE_IMU  0x01
-#define LOG_TYPE_BARO 0x02
-#define LOG_TYPE_ADXL 0x03
+#define LOG_TYPE_IMU    0x01
+#define LOG_TYPE_BARO   0x02
+#define LOG_TYPE_ADXL   0x03
+#define LOG_TYPE_GPS    0x04
+#define LOG_TYPE_BOARD  0x05
 
 #define DATA_QUE_LEN 256
 
@@ -174,15 +202,49 @@ typedef struct
 
 } adxl_data_t;
 
+
+
+typedef struct
+{
+    uint8_t   temp;
+    uint8_t   v_batt;      
+    uint8_t   state;
+    uint8_t   error_code; 
+    uint8_t   pyro_state;
+    uint8_t   RSSI;
+
+} board_data_t;
+ // first 3 bits for state, next 5 bits for sats count
+
+//       error codes     //
+// bit 0 - IMU 
+// bit 1 - BARO
+// bit 2 - GPS
+// bit 3 - GSM
+// bit 4 - SD Card
+// bit 5 - LOGGING
+// bit 6 - Command received in last cycle
+// bit 7 - Ack received in last cycle
+//
+
+//      pyro states     //
+// bit 0 - pyro 1 contuinutiy
+// bit 1 - pyro 1 trigger
+// ..
+// .
+//
+
 typedef struct 
 {
    uint8_t type;
    uint32_t time; //ms
    union 
    {  
-      imu_data_t  imu;
-      baro_data_t baro;
-      adxl_data_t adxl;
+        imu_data_t  imu;
+        baro_data_t baro;
+        adxl_data_t adxl;
+        gps_data_t  gps;
+        board_data_t board;
    };
 } Data_t;
 #pragma pack(pop)
@@ -190,12 +252,16 @@ typedef struct
 
 volatile imu_data_t latest_imu_data;
 
-
 volatile baro_data_t latest_baro_data;  
-
 
 volatile adxl_data_t latest_adxl_data;
 
+volatile gps_data_t latest_gps_data;
+
+volatile board_data_t latest_board_data;
+
+imu_data_t imu_offsets = {0, 0, 0, 0, 0, 0};
+adxl_data_t adxl_offsets = {13200, 13200, 13200};
 
 
 
@@ -212,12 +278,19 @@ static uint8_t spi_reg_read(uint8_t reg,uint8_t cs_pin);
 static void spi_reg_read_burst_imu(uint8_t reg, uint8_t *buf, size_t len);
 static void spi_reg_read_burst_bmp(uint8_t reg, uint8_t *buf, size_t len);
 
+bool Lora_Init();
+bool GPS_Init();
 bool IMU_Init();
 bool BARO_Init();
 bool ADXL_Init();
+
+void Read_GPS();
 Data_t Read_IMU();
 Data_t Read_Baro();
 Data_t Read_ADXL();
+
+
+void Transfer_SD(void *pvParameters);
 
 
 
@@ -299,30 +372,6 @@ void DebugTask(void *pvParameters)
     }
 }
 
-int Lora_Init()
-{
-    SPI1.setMISO(39);
-    pinMode(LORA_RST, OUTPUT);
-    digitalWrite(LORA_RST, LOW);
-    vTaskDelay(pdMS_TO_TICKS(10));
-    digitalWrite(LORA_RST, HIGH);
-    vTaskDelay(pdMS_TO_TICKS(10));
-    
-    if( !rf95.init())
-    {
-        debugPrint("LoRa init failed \n");
-        return -1;
-    }
-
-    rf95.setFrequency(LORA_FREQ);
-    rf95.setTxPower(LORA_POWER_DB, false);
-    rf95.setModemConfig(RH_RF95::Bw125Cr48Sf4096);
-    
-    debugPrint("LoRa initialized ! \n");
-    return 0;
-
-}
-
 void LoRa_Task(void *pvParameters)
 {
     Lora_Init();
@@ -341,6 +390,11 @@ void LoRa_Task(void *pvParameters)
         pkt.error_code |= ((ACK_Recieved_Last_Cycle << 7) | (CMD_Recieved_Last_Cycle << 6)|
                            (IMU_Error << 0) | (BARO_Error << 1) | (GPS_Error << 2) | (GSM_Error << 3) | (SD_Error << 4)| (Log_Enabled << 5));
         pkt.RSSI = rf95.lastRssi();
+        pkt.utc_time = latest_gps_data.utc_time;
+        pkt.lat = latest_gps_data.lat;
+        pkt.lon = latest_gps_data.lon;
+        pkt.gps_alt = latest_gps_data.gps_alt;
+        pkt.state = latest_board_data.state;
         pkt.ax = latest_imu_data.ax;
         pkt.ay = latest_imu_data.ay;
         pkt.az = latest_imu_data.az;    
@@ -352,6 +406,8 @@ void LoRa_Task(void *pvParameters)
         pkt.hz = latest_adxl_data.az;
         pkt.pressure = latest_baro_data.pressure;
         pkt.temp = latest_baro_data.temp;
+
+    
         debugPrint("%d %d %d",pkt.ax, pkt.ay, pkt.az);
         ACK_Recieved_Last_Cycle = false;
         CMD_Recieved_Last_Cycle = false;
@@ -495,7 +551,7 @@ void IMU_Task(void *pvParameters)
     {
 
         Data_t data = Read_IMU();
-        debugPrint("IMU read: ax=%d ay=%d az=%d gx=%d gy=%d gz=%d", data.imu.ax, data.imu.ay, data.imu.az, data.imu.gx, data.imu.gy, data.imu.gz);
+        //debugPrint("IMU read: ax=%d ay=%d az=%d gx=%d gy=%d gz=%d", data.imu.ax, data.imu.ay, data.imu.az, data.imu.gx, data.imu.gy, data.imu.gz);
         if(Log_Enabled)
         {
              if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
@@ -564,6 +620,126 @@ void ADXL_Task(void *pvParameters)
     }
 }
 
+void GPS_Task(void *pvParameters)
+{
+    debugPrint("Initializing GPS...");
+    GPS_Init();
+
+    TickType_t lastWake = xTaskGetTickCount();
+
+    while(1)
+    {
+        Read_GPS();
+        Data_t data;
+        data.type           = LOG_TYPE_GPS;
+        data.time           = millis();
+        data.gps.utc_time   = PVT_Data.iTOW;
+        data.gps.lat        = PVT_Data.lat;
+        data.gps.lon        = PVT_Data.lon;    
+        data.gps.gps_alt    = PVT_Data.hMSL;
+
+        debugPrint("GPS data: %d %d %d %ld", PVT_Data.hour, PVT_Data.minute, PVT_Data.second, PVT_Data.lat);
+
+        latest_gps_data = {data.gps.utc_time, data.gps.lat, data.gps.lon, data.gps.gps_alt};
+        latest_board_data.state |= PVT_Data.numSV ;
+
+
+        if(Log_Enabled)
+        {
+            if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
+            {
+                 debugPrint("Data queue full, dropping GPS data");
+            }
+        }
+        vTaskDelayUntil(&lastWake, pdMS_TO_TICKS(100));
+    }
+}
+
+void Board_task(void *pvParameters)
+{
+    TickType_t lastWake = xTaskGetTickCount();
+
+    while(1)
+    {
+     
+        vTaskDelayUntil(&lastWake, pdMS_TO_TICKS(100));
+    }
+}
+
+void Data_Log_Task(void *pvParameters)
+{
+
+    if(!flash_init())
+    {
+        debugPrint("Flash init failed, task exiting");
+        vTaskDelete(NULL);
+        return;
+    }
+
+    while(1)
+    {
+        if(Log_Enabled)
+        {
+            Data_t data;
+            int count = 0;
+            uint32_t lastSync = xTaskGetTickCount();
+            snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
+            log_file = lfs.open(filename, FILE_WRITE);
+            if(!log_file)
+            {
+                debugPrint("Failed to open log file for loggging !");
+            }
+            while(Log_Enabled)
+            {
+                if((xQueueReceive(Data_Queue, &data, 1000) == pdTRUE))
+                {   
+                    log_file.write((const uint8_t*)&data, sizeof(data));
+                    count++;
+
+                    bool by_count = (count % 50 == 0);
+                    bool by_time  = (millis() - lastSync >= 500);
+
+                    if (by_count || by_time) 
+                    {
+                        log_file.flush();
+                        lastSync = millis();
+                        if (count % 2000 == 0)
+                        debugPrint("[LOG] %lu records, q=%u",
+                                   count, uxQueueMessagesWaiting(Data_Queue));
+                    }
+           // else
+           // {
+             //   vTaskDelay(pdMS_TO_TICKS(10));
+           // }
+                }
+
+            }
+
+            log_file.flush();
+            log_file.close();
+
+            
+
+            snprintf(filename, sizeof(filename), "/INDEX.txt");
+            log_file = lfs.open(filename, FILE_WRITE);
+            char index_buf[16];
+            snprintf(index_buf, sizeof(index_buf), "%c_%c\n", flight_count,'N');
+            log_file.write(index_buf);
+            log_file.flush();
+            log_file.close();
+            File_Transferred = false;
+            
+            debugPrint("Logging stopped");
+            debugPrint("Initiating transfer of %s", filename);
+            xTaskCreate(Transfer_SD, "SD_TRANSFER", 4096, nullptr, 8, nullptr);
+        }
+        else
+        vTaskDelay(pdMS_TO_TICKS(100));
+
+    }
+        
+} 
+
 void Transfer_SD(void *pvParameters)
 {
     if(!SD.begin(BUILTIN_SDCARD))
@@ -623,87 +799,6 @@ void Transfer_SD(void *pvParameters)
     vTaskDelete(NULL);
 }
 
-void Data_Log_Task(void *pvParameters)
-{
-
-    if(!flash_init())
-    {
-        debugPrint("Flash init failed, task exiting");
-        vTaskDelete(NULL);
-        return;
-    }
-
-    while(1)
-    {
-        if(Log_Enabled)
-        {
-            Data_t data;
-            int count = 0;
-            uint32_t lastSync = xTaskGetTickCount();
-            snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
-            log_file = lfs.open(filename, FILE_WRITE);
-            if(!log_file)
-            {
-                debugPrint("Failed to open log file for loggging !");
-            }
-            while(Log_Enabled)
-            {
-                if((xQueueReceive(Data_Queue, &data, 1000) == pdTRUE))
-                {   
-                    log_file.write((const uint8_t*)&data, sizeof(data));
-                    count++;
-
-                    bool by_count = (count % 50 == 0);
-                    bool by_time  = (millis() - lastSync >= 500);
-
-                    if (by_count || by_time) 
-                    {
-                        //log_file.flush();
-                        lastSync = millis();
-                        if (count % 2000 == 0)
-                        debugPrint("[LOG] %lu records, q=%u",
-                                   count, uxQueueMessagesWaiting(Data_Queue));
-                    }
-           // else
-           // {
-             //   vTaskDelay(pdMS_TO_TICKS(10));
-           // }
-                }
-
-            }
-
-            log_file.flush();
-            log_file.close();
-
-            
-
-            snprintf(filename, sizeof(filename), "/INDEX.txt", flight_count);
-            log_file = lfs.open(filename, FILE_WRITE);
-            char index_buf[16];
-            snprintf(index_buf, sizeof(index_buf), "%c_%c\n", flight_count,'N');
-            log_file.write(index_buf);
-            log_file.flush();
-            log_file.close();
-            File_Transferred = false;
-            
-            debugPrint("Logging stopped");
-            debugPrint("Initiating transfer of %s", filename);
-            xTaskCreate(Transfer_SD, "SD_TRANSFER", 4096, nullptr, 8, nullptr);
-        }
-        else
-        vTaskDelay(pdMS_TO_TICKS(100));
-
-    }
-        
-} 
-
-
-
-
-
-
-
-
 void setup()
 {
   Serial.begin(115200);
@@ -729,6 +824,8 @@ void setup()
   xTaskCreate(IMU_Task      , "IMU"     , 2048  , nullptr, 7, nullptr);
   xTaskCreate(Baro_Task     , "BARO"    , 2048  , nullptr, 6, nullptr);
   xTaskCreate(ADXL_Task     , "ADXL"    , 1024  , nullptr, 5, nullptr);
+  xTaskCreate(GPS_Task      , "GPS"     , 2048  , nullptr, 5, nullptr);
+  xTaskCreate(Board_task    , "BOARD"   , 1024  , nullptr, 5, nullptr);
   xTaskCreate(Data_Log_Task , "LOG"     , 8192  , nullptr, 4, nullptr);
 
   Serial.println("INIT");
@@ -790,6 +887,123 @@ static void spi_reg_read_burst_bmp(uint8_t reg, uint8_t *buf, size_t len)
     GY_91.endTransaction();
 }
 
+bool flash_init()
+{
+    if(!lfs.begin())
+    {
+        debugPrint("LittleFS init failed !");
+        return false;
+    }
+    debugPrint("LittleFS initialized successfully");
+    log_file = lfs.open("/INDEX.txt", FILE_READ);
+    if(!log_file)
+    {
+        debugPrint("No index file found, ");
+        flight_count = 0;
+        log_file = lfs.open("/INDEX.txt", FILE_WRITE);
+        if(!log_file)       
+        {
+            debugPrint("Failed to create index file !");
+            return false;
+        }
+        log_file.write(0x00);
+        log_file.write("_");
+        log_file.write("N");
+        log_file.flush();
+        debugPrint("Index file created with flight count 0");
+
+    }
+    
+    flight_count = (uint8_t)log_file.read();
+    
+    char c = log_file.read();
+    c = log_file.read();
+    log_file.close();
+    debugPrint("flight count: %lu, transferred: %c", flight_count, c);
+    if(c == 'T')
+    {
+    snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
+    log_file = lfs.open(filename, FILE_WRITE);
+    if(!log_file)
+    {
+        debugPrint("Failed to create log file !");
+        return false;
+    }
+    lfs_ready = true;
+    debugPrint("Log file created successfully");
+    return true;
+   }
+   else
+   {
+    debugPrint("Current log hasn't been transferred");
+    xTaskCreate(Transfer_SD, "SD_TRANSFER", 4096, nullptr, 8, nullptr);
+    return true;
+   }
+
+}
+
+bool Lora_Init()
+{
+    SPI1.setMISO(39);
+    pinMode(LORA_RST, OUTPUT);
+    digitalWrite(LORA_RST, LOW);
+    vTaskDelay(pdMS_TO_TICKS(10));
+    digitalWrite(LORA_RST, HIGH);
+    vTaskDelay(pdMS_TO_TICKS(10));
+    
+    if( !rf95.init())
+    {
+        debugPrint("LoRa init failed \n");
+        return -1;
+    }
+
+    rf95.setFrequency(LORA_FREQ);
+    rf95.setTxPower(LORA_POWER_DB, false);
+    rf95.setModemConfig(RH_RF95::Bw125Cr48Sf4096 );
+    // Bw125Cr45Sf128 	   ///< Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Default medium range
+	// Bw500Cr45Sf128      ///< Bw = 500 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Fast+short range
+	// Bw31_25Cr48Sf512	   ///< Bw = 31.25 kHz, Cr = 4/8, Sf = 512chips/symbol, CRC on. Slow+long range
+	// Bw125Cr48Sf4096     ///< Bw = 125 kHz, Cr = 4/8, Sf = 4096chips/symbol, CRC on. Slow+long range
+    
+    
+    debugPrint("LoRa initialized ! \n");
+    return 0;
+
+}
+
+bool GPS_Init()
+{
+    
+    GPS.begin(9600);
+    
+    GPS_Send_Cmd(setbaud,sizeof(setbaud));
+    GPS.end();
+    vTaskDelay(pdMS_TO_TICKS(100));
+    GPS.begin(115200);
+    GPS.addMemoryForRead(gps_buffer, sizeof(gps_buffer));
+
+    GPS_Send_Cmd(disableGPGLL,sizeof(disableGPGLL));
+    vTaskDelay(pdMS_TO_TICKS(1));
+    GPS_Send_Cmd(disableGPGSV,sizeof(disableGPGSV));
+    vTaskDelay(pdMS_TO_TICKS(1));
+    GPS_Send_Cmd(disableGPGSA,sizeof(disableGPGSA));
+    vTaskDelay(pdMS_TO_TICKS(1));
+    GPS_Send_Cmd(disableGPGGA,sizeof(disableGPGGA));
+    vTaskDelay(pdMS_TO_TICKS(1));
+    GPS_Send_Cmd(disableGPVTG,sizeof(disableGPVTG));
+    vTaskDelay(pdMS_TO_TICKS(1));
+    GPS_Send_Cmd(disableGPRMC,sizeof(disableGPRMC));
+    vTaskDelay(pdMS_TO_TICKS(1));
+
+    GPS.clear();
+
+    GPS_Send_Cmd(NAV5_Airborne,sizeof(NAV5_Airborne));
+    vTaskDelay(pdMS_TO_TICKS(1));
+    GPS_Send_Cmd(Enable_PVT,sizeof(Enable_PVT));
+    vTaskDelay(pdMS_TO_TICKS(1));
+    debugPrint("GPS initialized successfully");
+    return true;
+}
 bool IMU_Init()
 {
     pinMode(IMU_CS, OUTPUT);
@@ -806,10 +1020,15 @@ bool IMU_Init()
     debugPrint("IMU found ID : 0x%02X", who_am_i);
 
     spi_reg_write(0x6B, 0x01, IMU_CS); // pwr management, clock source = gyro X, sleep disabled
+    vTaskDelay(pdMS_TO_TICKS(1));
     spi_reg_write(0x1A, 0x03, IMU_CS); // config, DLPF 44Hz
+    vTaskDelay(pdMS_TO_TICKS(1));
     spi_reg_write(0x1B, 0x18, IMU_CS); // gyro config, +-2000dps
+    vTaskDelay(pdMS_TO_TICKS(1));
     spi_reg_write(0x1C, 0x18, IMU_CS); // accel config, +-16g
+    vTaskDelay(pdMS_TO_TICKS(1));
     spi_reg_write(0x19, 0x04, IMU_CS); // 1000/4+1 = 200hz
+    vTaskDelay(pdMS_TO_TICKS(1));
     debugPrint("IMU initialized successfully");
     return true;
 
@@ -850,15 +1069,19 @@ bool BARO_Init()
     cal.P8 = s16(20);
     cal.P9 = s16(22);
 
+    vTaskDelay(pdMS_TO_TICKS(1));
     spi_reg_write(0xF4, 0x57, BMP_CS);  //0x57 = 0b01010111:    set freq osrs p = 2x :0x37
+    vTaskDelay(pdMS_TO_TICKS(1));
     spi_reg_write(0xF5, 0x08, BMP_CS);  //0xA0 = 0b10100000: IIR off, 20hz sampling
+    vTaskDelay(pdMS_TO_TICKS(1));
+    //Serial.printf("T: %u %d %d\n", cal.T1, cal.T2, cal.T3);
+    //Serial.printf("P: %u %d %d %d %d %d %d %d %d\n",cal.P1, cal.P2, cal.P3, cal.P4, cal.P5, cal.P6, cal.P7, cal.P8, cal.P9);
     // rn ~ 25hz
     debugPrint("Barometer initialized successfully");
     return true;
 
 
 }
-
 bool ADXL_Init()
 {
     ACCEL_H.begin();
@@ -873,14 +1096,44 @@ bool ADXL_Init()
         IMU_Error = true;
         return false;
     }
+
     IMU_Error = false;
     debugPrint("ADS initialized successfully");
     return true;
 }
 
+
+
+void Read_GPS()
+{
+    while(GPS.available()>90)
+    {
+        
+        if(GPS.read() == 0xB5 && GPS.read() == 0x62)
+        {
+            
+         if(GPS.read() == 0x01 && GPS.read() == 0x07)
+         {
+            uint8_t buf[100] = {0};
+            int n = GPS.read();
+            GPS.read();
+            if(n == 92 | n == 84)
+            {
+              //debugPrint("GPS: PVT message received");
+              GPS.readBytes((uint8_t*)buf, n+2);
+
+              memcpy(&PVT_Data, buf, sizeof(PVT_t));
+            }
+
+         }
+
+        }
+    }
+    return;
+}
 Data_t Read_IMU()
 {
-    uint8_t buf[14];
+    uint8_t buf[14] = {0};
 
     Data_t data;
     data.type = LOG_TYPE_IMU; 
@@ -890,12 +1143,14 @@ Data_t Read_IMU()
     spi_reg_read_burst_imu(0x3B, buf, 14);
     xSemaphoreGive(SPI_Mutex);
 
-    data.imu.ax = (int16_t)((buf[0] << 8) | buf[1]);
-    data.imu.ay = (int16_t)((buf[2] << 8) | buf[3]);
-    data.imu.az = (int16_t)((buf[4] << 8) | buf[5]);// BYTES 6 AND 7 ARE TEMP, NOT USED CURRENTLY
-    data.imu.gx = (int16_t)((buf[8] << 8) | buf[9]);
-    data.imu.gy = (int16_t)((buf[10] << 8) | buf[11]);
-    data.imu.gz = (int16_t)((buf[12] << 8) | buf[13]);
+    data.imu.ay = -(int16_t)((buf[0] << 8) | buf[1]) - imu_offsets.ay;
+    data.imu.az = -(int16_t)((buf[2] << 8) | buf[3]) - imu_offsets.az;
+    data.imu.ax = (int16_t)((buf[4] << 8) | buf[5]) - imu_offsets.ax;// BYTES 6 AND 7 ARE TEMP, NOT USED CURRENTLY
+    data.imu.gy = -(int16_t)((buf[8] << 8) | buf[9]) - imu_offsets.gy;
+    data.imu.gz = -(int16_t)((buf[10] << 8) | buf[11]) - imu_offsets.gz;
+    data.imu.gx = (int16_t)((buf[12] << 8) | buf[13]) - imu_offsets.gx;   /// realignment to board orientation
+
+
     return data;
 }
 Data_t Read_Baro()
@@ -945,11 +1200,12 @@ Data_t Read_Baro()
     var2 = ((int64_t)cal.P8 * p) >> 19;
     p = ((p + var1 + var2) >> 8) + ((int64_t)cal.P7 << 4);
     
-    float pressure = (float)(uint32_t)p / 25600.0f;
+    float pressure = (float)((uint32_t)p / 25600.0f);
 
     
     data.baro.pressure = pressure;
     data.baro.temp = temperature;
+    //debugPrint("raw: %02X %02X %02X adc_P=%ld\n", raw[0], raw[1], raw[2],(long)adc_P);
     return data;
 }
 Data_t Read_ADXL()
@@ -957,15 +1213,16 @@ Data_t Read_ADXL()
     Data_t data;
     data.type = LOG_TYPE_ADXL;
     data.time = millis();
-    int16_t *a[3] = {&data.adxl.ax, &data.adxl.ay, &data.adxl.az};
+    int16_t *a[3] = {&data.adxl.ax, &data.adxl.az, &data.adxl.ay};
+    int sign[3] = {-1, 1, -1};
 
     for(int i = 0; i < 3; i++)
     {
-        uint16_t cfg = CFG_BASE | ((0b100 + i) << 12);
-
-        ACCEL_H.beginTransmission(ADS_ADDR);
-        ACCEL_H.write(0x01); // config register
-        ACCEL_H.write((uint8_t)(cfg >> 8));
+        uint16_t cfg = CFG_BASE | ((0b100 + i) << 12); // 0100 0000 0000 0000
+                                                       
+        ACCEL_H.beginTransmission(ADS_ADDR);           
+        ACCEL_H.write(0x01); // config register        
+        ACCEL_H.write((uint8_t)(cfg >> 8));             
         ACCEL_H.write((uint8_t)(cfg & 0xFF));
         ACCEL_H.endTransmission();
 
@@ -978,62 +1235,8 @@ Data_t Read_ADXL()
         uint8_t high_byte = ACCEL_H.read();
         uint8_t low_byte = ACCEL_H.read();
 
-        *a[i] = (int16_t)((high_byte << 8) | low_byte);
+        *a[i] = sign[i]*(((int16_t)((high_byte << 8) | low_byte)) - *(&adxl_offsets.ax + i));
     }
     return data;    
 }
 
-bool flash_init()
-{
-    if(!lfs.begin())
-    {
-        debugPrint("LittleFS init failed !");
-        return false;
-    }
-    debugPrint("LittleFS initialized successfully");
-    log_file = lfs.open("/INDEX.txt", FILE_READ);
-    if(!log_file)
-    {
-        debugPrint("No index file found, ");
-        flight_count = 0;
-        log_file = lfs.open("/INDEX.txt", FILE_WRITE);
-        if(!log_file)       
-        {
-            debugPrint("Failed to create index file !");
-            return false;
-        }
-        log_file.write(0x00);
-        log_file.write("_");
-        log_file.write("N");
-        log_file.flush();
-        debugPrint("Index file created with flight count 0");
-
-    }
-    
-    flight_count = (uint8_t)log_file.read();
-    
-    char c = log_file.read();
-    c = log_file.read();
-    log_file.close();
-    debugPrint("Last flight count: %lu, transferred: %c", flight_count, c);
-    if(c == 'T')
-    {
-    snprintf(filename, sizeof(filename), "/flight_%ld.bin", flight_count);
-    log_file = lfs.open(filename, FILE_WRITE);
-    if(!log_file)
-    {
-        debugPrint("Failed to create log file !");
-        return false;
-    }
-    lfs_ready = true;
-    debugPrint("Log file created successfully");
-    return true;
-   }
-   else
-   {
-    debugPrint("Current log hasn't been transferred");
-    xTaskCreate(Transfer_SD, "SD_TRANSFER", 4096, nullptr, 8, nullptr);
-    return true;
-   }
-
-}
