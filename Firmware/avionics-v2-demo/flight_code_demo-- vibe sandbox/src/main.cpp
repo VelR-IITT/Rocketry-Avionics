@@ -127,8 +127,8 @@ typedef struct
 //  bit 3 - Command received in last cycle
 //  bit 4 - data que dropping packets
 //  bit 5 - sd que dropping packets
-//  bit 6 - GPS fix ok
-//  bit 7 - GPS fix 3d /2d (1 == 3d )
+//  bit 6 - GPS time lock
+//  bit 7 - GPS pos lock
 //
 
 
@@ -276,8 +276,8 @@ typedef struct
 // bit 1 - pyro 2 contuinutiy
 // ..
 // .
-//bit 4 - pyro 1 
-//bit 5 - pyro 2 
+//bit 4 - pyro 1 mode
+//bit 5 - pyro 2 mode
 //..
 //.
 
@@ -485,7 +485,7 @@ void LoRa_Task(void *pvParameters)
         pkt.hz              = latest_adxl_data.az;
         pkt.pressure        = latest_baro_data.pressure;
         pkt.temp            = latest_baro_data.temp;
-        pkt.pyro_state      = latest_board_data.pyro_state;
+        // pkt.pyro_state
 
         
   
@@ -630,7 +630,6 @@ void Cmd_Task(void *pvParameters)
                     CMD_Param_Tele = cmd.cmd_param;
                     Pyro_Mode = cmd.cmd_param;
                     debugPrint("CMD: pyro mode : %b",Pyro_Mode);
-                    break;
 
                 case CMD_TRIG_PYRO:
                     CMD_Recieved_Tele = CMD_TRIG_PYRO;
@@ -828,7 +827,6 @@ void Board_task(void *pvParameters)
 
     while(1)
     {
-        debugPrint("%d , %d, %d, %d",analogRead(pyro_continuity[0]),pyro_continuity[1],CONTIN_THRESHOLD,good_continuity);
         Data_t data;
         data.type = LOG_TYPE_BOARD;
         data.time = millis(); 
@@ -844,24 +842,11 @@ void Board_task(void *pvParameters)
         uint8_t Pyro_State = 0;
         for(int i =0 ; i<4;i++)
         {
-            Pyro_State |= (!digitalRead(Pyro_Trigger[i]))<<i;
+            Pyro_State |= digitalRead(pyro_continuity[i])<<i;
         }
-        data.board.pyro_state       = (uint8_t)(Pyro_Contin|(Pyro_State<<4));
+        data.board.pyro_state       = (uint8_t)(Pyro_Con_Mode|(Pyro_State<<4));
         data.board.RSSI             = rf95.lastRssi();
-
         
-
-        if(Log_Enabled)
-        {
-            if (xQueueSend(Data_Queue, &data, 0) != pdTRUE) 
-            {
-                debugPrint("Data queue full, dropping baro data");
-                Data_Que_Pkt_Drop = true;
-            }
-        }
-        taskENTER_CRITICAL();
-        latest_board_data = data.board;
-        taskEXIT_CRITICAL();
                 
         vTaskDelayUntil(&lastWake, pdMS_TO_TICKS(100));
     }
@@ -980,11 +965,11 @@ void Data_Log_Task(void *pvParameters)
                 {   
                     log_file.write((const uint8_t*)&data, sizeof(data));
 
-                    if (xQueueSend(SD_Data_Queue, &data, 0) != pdTRUE) 
-                    {
-                        debugPrint("SD Data queue full, dropping data");
-                        SD_Que_Pkt_Drop = true;
-                    }
+                    // if (xQueueSend(SD_Data_Queue, &data, 0) != pdTRUE) 
+                    // {
+                    //     debugPrint("SD Data queue full, dropping data");
+                    //     SD_Que_Pkt_Drop = true;
+                    // }
 
                     count++;
 
